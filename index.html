@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Merge Garden</title>
+<title>Merge Garden - Free Merge Puzzle Game | Ved Games Production</title>
+<meta name="description" content="Merge Garden is a free relaxing merge puzzle game. Buy seeds, merge plants, deliver orders and climb the rankings. Play instantly in your browser.">
+
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0E2A2B;--surf:#17403F;--surf2:#1F5251;--ink:#EAFBF1;--mut:#8DB5AE;--lime:#C6F432;--gold:#FFC857;--rose:#FF7A90;
@@ -49,7 +51,8 @@ input{background:var(--surf);color:var(--ink);border:2px solid var(--lime);borde
 #bar .btn{min-width:0;flex:1 1 28%;padding:10px 6px;font-size:17px}#bar #bs,#bar #spawn{flex:1 1 45%;font-size:19px}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-160%);background:var(--gold);color:#2b2000;padding:9px 18px;border-radius:14px;font-weight:800;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none;z-index:30;white-space:nowrap}
 #toast.show{transform:translate(-50%,0)}
-.credit{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin-top:6px}
+@media(prefers-reduced-motion:reduce){.it.new,.it.mg,.sp{animation:none}}
+.credit{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin-top:6px}.credit img{width:28px;height:28px;border-radius:7px}.logo{width:84px;height:84px;border-radius:20px}.adbox{display:none;width:min(320px,90vw);min-height:50px;border:1px dashed var(--surf2);border-radius:10px;color:var(--mut);font-size:12px}
 body{background:transparent}html{background:var(--bg)}
 body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-gradient(circle at 25% 25%,#2b8a6e55,transparent 40%),radial-gradient(circle at 78% 72%,#c6f43228,transparent 45%);animation:drift 14s ease-in-out infinite alternate}
 @keyframes drift{to{transform:translate(4%,3%) scale(1.12)}}
@@ -61,10 +64,11 @@ body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-g
 @keyframes cf{to{transform:translate(var(--x),105vh) rotate(720deg)}}
 #disc{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:50;text-align:center;padding:20px}#disc.on{display:flex}
 .cell{box-shadow:inset 0 -3px 0 #0003}
-@media(prefers-reduced-motion:reduce){.it.new,.it.mg,.sp,.cf,body::before,.ft{animation:none}}
+@media(prefers-reduced-motion:reduce){.cf,body::before,.ft{animation:none}}
 </style>
 </head>
 <body>
+<div id="boot" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;font:20px sans-serif;z-index:5">Loading... If you only see this text, the game code is missing from your file. Upload index.html again.</div>
 <div id="toast"></div><div id="ghost" hidden></div>
 
 <section class="scr" id="login">
@@ -269,6 +273,7 @@ $('#bSet').onclick=()=>{sfx('click');const R=(k,l)=>`<div class="row"><div>${l}<
   document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;store.set[k]=!store.set[k];save();b.classList.toggle('on',store.set[k]);b.textContent=store.set[k]?'On':'Off';sfx('click')})};
 if(store.last&&store.users[store.last])$('#name').value=store.last;
 screens('login');
+$('#boot').remove();
 </script>
 </body>
 </html>
