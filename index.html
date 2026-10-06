@@ -1,1 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merge Garden - Free Merge Puzzle Game | Ved Games Production</title>
+<meta name="description" content="Merge Garden is a free relaxing merge puzzle game. Buy seeds, merge plants, deliver orders and climb the rankings. Play instantly in your browser.">
+<meta name="keywords" content="merge game, merge garden, puzzle game, free online game, browser game, Ved Games Production">
+<meta name="author" content="Ved Games Production">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://YOUR-DOMAIN.com/">
+<!-- Google Search Console: paste your verification code below --><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merge Garden - Free Merge Puzzle Game | Ved Games Production</title>
+<meta name="description" content="Merge Garden is a free relaxing merge puzzle game. Buy seeds, merge plants, deliver orders and climb the rankings. Play instantly in your browser.">
 
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E2A2B;--surf:#17403F;--surf2:#1F5251;--ink:#EAFBF1;--mut:#8DB5AE;--lime:#C6F432;--gold:#FFC857;--rose:#FF7A90;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:'Baloo 2',system-ui,sans-serif;user-select:none;overflow:hidden;touch-action:none}
+button,input{font:inherit}
+h1{font-size:clamp(46px,13vw,76px);margin:0;line-height:.95;font-weight:800;color:var(--lime)}
+h2{margin:0;font-size:26px}
+p{margin:0;color:var(--mut)}
+.scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
+.scr.on{display:flex}
+.btn{background:var(--lime);color:#14260a;border:0;border-radius:16px;padding:12px 26px;font-size:19px;font-weight:800;min-width:200px;cursor:pointer;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.94)}.btn.alt{background:var(--surf2);color:var(--ink)}.btn:disabled{opacity:.35}
+input{background:var(--surf);color:var(--ink);border:2px solid var(--lime);border-radius:14px;padding:11px 16px;font-size:20px;text-align:center;width:min(280px,80vw)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.panel{background:var(--surf);border-radius:20px;padding:16px;width:min(380px,92vw);max-height:62vh;overflow:auto;text-align:left}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid var(--surf2);gap:10px}
+.row:last-child{border:0}.row small{display:block;color:var(--mut)}.lock{opacity:.4}
+.tg{background:var(--surf2);color:var(--ink);border:0;border-radius:12px;padding:6px 14px;font-weight:700;cursor:pointer}
+.tg.on{background:var(--lime);color:#14260a}
+#game{flex-direction:column;gap:10px;justify-content:flex-start;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px}
+#top{display:flex;justify-content:space-between;width:min(420px,100%);font-size:22px;font-weight:800}
+#top span{color:var(--gold)}
+#orders{display:flex;gap:8px;width:min(420px,100%)}
+.ord{flex:1;background:var(--surf);border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid transparent;transition:border-color .2s,transform .2s}
+.ord .e{font-size:30px;line-height:1}.ord .r{color:var(--gold);font-weight:800;font-size:15px}
+.ord button{background:var(--surf2);color:var(--mut);border:0;border-radius:10px;padding:2px 12px;font-weight:800;font-size:14px}
+.ord.ok{border-color:var(--lime)}.ord.ok button{background:var(--lime);color:#14260a}
+#board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:min(420px,100%);aspect-ratio:5/6;max-height:44vh;background:var(--surf);padding:8px;border-radius:22px;touch-action:none}
+.cell{background:var(--surf2);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative}
+.cell.over{background:#2c6e6a;box-shadow:inset 0 0 0 3px var(--lime)}
+.it{font-size:min(10vw,44px);line-height:1;cursor:grab;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:14px;touch-action:none}
+.it.sel{background:#ffffff22;box-shadow:inset 0 0 0 3px var(--gold)}.it.hold{opacity:.25}
+.it.new{animation:pop .35s cubic-bezier(.2,1.6,.4,1)}.it.mg{animation:mg .5s cubic-bezier(.2,1.8,.4,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes mg{0%{transform:scale(.4)}60%{transform:scale(1.5);filter:brightness(1.6)}100%{transform:scale(1)}}
+.sp{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--lime);pointer-events:none;animation:sp .6s ease-out forwards}
+@keyframes sp{to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
+#ghost{position:fixed;pointer-events:none;font-size:52px;transform:translate(-50%,-60%);z-index:20;filter:drop-shadow(0 8px 6px #0006)}
+#bar{display:flex;flex-wrap:wrap;gap:8px;width:min(420px,100%)}
+#bar .btn{min-width:0;flex:1 1 28%;padding:10px 6px;font-size:17px}#bar #bs,#bar #spawn{flex:1 1 45%;font-size:19px}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-160%);background:var(--gold);color:#2b2000;padding:9px 18px;border-radius:14px;font-weight:800;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none;z-index:30;white-space:nowrap}
+#toast.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.it.new,.it.mg,.sp{animation:none}}
+.credit{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin-top:6px}.credit img{width:28px;height:28px;border-radius:7px}.logo{width:84px;height:84px;border-radius:20px}.adbox{display:none;width:min(320px,90vw);min-height:50px;border:1px dashed var(--surf2);border-radius:10px;color:var(--mut);font-size:12px}
+body{background:transparent}html{background:var(--bg)}
+body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-gradient(circle at 25% 25%,#2b8a6e55,transparent 40%),radial-gradient(circle at 78% 72%,#c6f43228,transparent 45%);animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(4%,3%) scale(1.12)}}
+.btn{box-shadow:0 4px 0 #0005}.btn:active{box-shadow:0 1px 0 #0005;transform:translateY(3px)}
+.duo{display:flex;gap:8px;width:min(330px,88vw)}.duo .btn{min-width:0;flex:1;padding:12px 6px;font-size:17px}
+.ft{position:fixed;pointer-events:none;font-weight:800;color:var(--gold);font-size:20px;text-shadow:0 2px 0 #0008;animation:ft 1s ease-out forwards;z-index:25}
+@keyframes ft{to{transform:translateY(-60px);opacity:0}}
+.cf{position:fixed;top:-12px;width:8px;height:12px;pointer-events:none;z-index:60;animation:cf 1.8s ease-in forwards}
+@keyframes cf{to{transform:translate(var(--x),105vh) rotate(720deg)}}
+#disc{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:50;text-align:center;padding:20px}#disc.on{display:flex}
+.cell{box-shadow:inset 0 -3px 0 #0003}
+@media(prefers-reduced-motion:reduce){.cf,body::before,.ft{animation:none}}
+</style>
+</head>
+<body>
+<div id="toast"></div><div id="ghost" hidden></div>
+
+<section class="scr" id="login">
+  <h1>Merge Garden</h1><p>Combine matching plants. Grow something amazing.</p>
+  <input id="name" maxlength="14" placeholder="Your name" autocomplete="nickname" aria-label="Your name">
+  <input id="pw" type="password" maxlength="30" placeholder="Password (4+ characters)" autocomplete="current-password" aria-label="Password">
+  <p id="err" style="color:var(--rose);min-height:20px;font-size:14px"></p>
+  <button class="btn" id="go">Sign in or create</button>
+  <button class="btn alt" id="guest">Play as guest</button>
+  <p style="font-size:13px">Your garden is saved on this device.</p>
+  <div class="credit"><span>Made by Ved Games Production</span></div>
+</section>
+
+<section class="scr" id="menu">
+  <h1>Merge Garden</h1><p id="hello"></p><p id="stat"></p>
+  <button class="btn" id="play">Continue garden</button>
+  <div class="duo"><button class="btn alt" id="bDaily">Daily gift</button><button class="btn alt" id="bBook">Plant book</button></div>
+  <div class="duo"><button class="btn alt" id="bAch">Achievements</button><button class="btn alt" id="bLb">Rankings</button></div>
+  <div class="duo"><button class="btn alt" id="bSet">Settings</button><button class="btn alt" id="bOut">Switch player</button></div>
+  <div class="credit"><span>Made by Ved Games Production</span></div>
+</section>
+
+<section class="scr" id="game">
+  <div id="top"><div>Coins <span id="coins">0</span></div><div>Rank <span id="rk">-</span></div><div>Best <span id="bl"></span></div></div><div id="decor" style="min-height:24px;font-size:20px"></div>
+  <div id="orders"></div>
+  <div id="board"></div>
+  <p id="hint">Buy seeds, plant them, then drag matching plants together.</p>
+  <div id="bar">
+    <button class="btn alt" id="bs">Buy seed</button>
+    <button class="btn" id="spawn">Plant (<span id="sd">0</span>)</button>
+    <button class="btn alt" id="sell">Sell</button>
+    <button class="btn alt" id="shop">Shop</button>
+    <button class="btn alt" id="menuB">Menu</button>
+  </div>
+</section>
+
+<div id="disc"><div id="dE" style="font-size:96px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)"></div><h2 id="dT"></h2><p id="dR"></p><button class="btn" id="dOk">Awesome</button></div>
+
+<section class="scr" id="pan"><h2 id="pt"></h2><div class="panel" id="pb"></div><button class="btn alt" id="pc">Back</button></section>
+
+<script>
+const $=s=>document.querySelector(s),COLS=5,N=30,MAXL=10;
+const PL=[['🌱','Sprout'],['🌿','Herb'],['🍀','Clover'],['🌼','Daisy'],['🌷','Tulip'],['🌻','Sunflower'],['🌹','Rose'],['🌳','Oak'],['🍎','Orchard'],['🏆','Golden bloom']];
+const E=l=>PL[l-1][0];
+/* storage + login */
+let store={users:{},last:'',set:{sfx:true,music:true,vib:true}};
+try{const j=localStorage.getItem('mgarden');if(j)store=Object.assign(store,JSON.parse(j))}catch(e){}
+const save=()=>{try{localStorage.setItem('mgarden',JSON.stringify(store))}catch(e){}};
+let me=null,sel=-1,drag=null;
+function signIn(n,h){n=(n||'').trim().slice(0,14)||'Guest';
+  let u=store.users[n];
+  if(!u){u=store.users[n]={coins:60,seeds:3,earned:0,merges:0,done:0,top:1,up:{s:0,l:0},ach:{},board:Array(N).fill(0),orders:[],deco:[],created:Date.now(),pw:h};
+    u.board[7]=1;u.board[8]=1;u.board[12]=2}
+  if(u.seeds==null)u.seeds=3;if(!u.deco)u.deco=[];if(!u.created)u.created=Date.now();lastRank=0;if(!u.seen)u.seen=u.top;if(!u.lastSeed)u.lastSeed=Date.now();
+  me=u;me.name=n;store.last=n;fillOrders();save();menu()}
+const ACH=[['m1','First merge','Merge two plants'],['l4','Green thumb','Grow a Daisy'],['l7','Rosarian','Grow a Rose'],['l10','Golden bloom','Reach the top plant'],
+ ['m100','Busy bee','Merge 100 times'],['o10','Florist','Deliver 10 orders'],['c500','Saver','Earn 500 coins'],['up','Investor','Buy an upgrade'],['d1','Landscaper','Buy a decoration'],['r1','Garden champion','Reach rank 1']];
+function unlock(id){if(me.ach[id])return;me.ach[id]=1;save();toast('Achievement: '+ACH.find(a=>a[0]===id)[1]);sfx('ach')}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2000)}
+/* audio */
+let ac,mg;
+function initAudio(){if(ac){if(ac.state==='suspended')ac.resume();return}try{ac=new(window.AudioContext||window.webkitAudioContext)();mg=ac.createGain();mg.gain.value=.5;mg.connect(ac.destination)}catch(e){}}
+function tone(f,d,type,v,music){if(!ac||!(music?store.set.music:store.set.sfx))return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+  o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(mg);o.start(t);o.stop(t+d)}
+const SC=[262,294,330,392,440,523,587,659,784,880];
+function sfx(k,l){const q=(f,i)=>setTimeout(()=>tone(f,.25,'triangle',.22),i*80);
+  if(k==='merge')tone(SC[l-1]*2,.3,'triangle',.25);else if(k==='drop')tone(300,.07,'sine',.15);
+  else if(k==='spawn')tone(420,.12,'sine',.18);else if(k==='coin'){q(784,0);q(1047,1)}
+  else if(k==='ach'){q(659,0);q(784,1);q(988,2)}else if(k==='no')tone(150,.18,'sawtooth',.12);else if(k==='click')tone(520,.05,'square',.07)}
+const vib=ms=>{if(store.set.vib&&navigator.vibrate)try{navigator.vibrate(ms)}catch(e){}};
+let st=0;const PAT=[0,2,4,2,5,4,2,1,0,2,4,7,5,4,2,1];
+setInterval(()=>{if(!$('#game').classList.contains('on'))return;tone(SC[PAT[st++%16]]/2,.9,'sine',.06,1)},420);
+/* game logic */
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const val=l=>l*l*2;
+function newOrder(){const l=Math.max(2,Math.min(8,2+Math.floor(Math.random()*Math.max(1,me.top-1))));return{l,r:val(l)*3}}
+function fillOrders(){while(me.orders.length<3)me.orders.push(newOrder())}
+function gain(c){me.coins+=c;me.earned+=c;if(me.earned>=500)unlock('c500')}
+function spawn(){if(me.seeds<1){toast('No seeds: buy one first');sfx('no');return}
+  const em=[];me.board.forEach((v,i)=>{if(!v)em.push(i)});
+  if(!em.length){toast('Board full: merge or sell something');sfx('no');return}
+  const i=em[Math.random()*em.length|0];me.seeds--;me.board[i]=Math.random()<me.up.s*.08?2:1;save();render(i);sfx('spawn');vib(8)}
+function drop(a,b){
+  if(b==null||b===a||b<0)return;const A=me.board[a],B=me.board[b];
+  if(!B){me.board[b]=A;me.board[a]=0;sel=-1;save();render(b);sfx('drop')}
+  else if(A===B&&A<MAXL){let nl=A+1;if(nl<MAXL&&Math.random()<me.up.l*.06){nl++;toast('Lucky growth!')}
+    me.board[b]=nl;me.board[a]=0;me.merges++;sel=-1;gain(A);combo(b,A);me.top=Math.max(me.top,nl);
+    grew(nl);
+    save();render(b,'mg');sfx('merge',nl);vib(15);sparks(b)}
+  else{me.board[a]=B;me.board[b]=A;sel=-1;save();render(b);sfx('drop')}}
+function grew(nl){me.top=Math.max(me.top,nl);if(nl>me.seen){me.seen=nl;discover(nl)}unlock('m1');if(nl>=4)unlock('l4');if(nl>=7)unlock('l7');if(nl>=10)unlock('l10');if(me.merges>=100)unlock('m100')}
+const seedCost=()=>5+Math.floor(me.top*1.5);
+function buySeed(n){const c=Math.floor(seedCost()*n*(n>1?.8:1));if(me.coins<c){toast('Need '+c+' coins');sfx('no');return false}me.coins-=c;me.seeds+=n;save();sfx('coin');render();return true}
+const DECO=[['fountain','⛲','Fountain',400,300],['gazebo','🛖','Gazebo',1500,1000],['greenhouse','🏡','Greenhouse',6000,4000],['statue','🗽','Statue',20000,15000]];
+const RIV=[['Fern',15],['Basil',30],['Juniper',55],['Rosa',90],['Oakley',140]];
+const pscore=u=>u.merges*5+u.done*40+u.top*150+(u.deco||[]).reduce((a,d)=>a+DECO.find(x=>x[0]===d)[4],0);
+function board(){const h=(Date.now()-me.created)/3.6e6,L=RIV.map(r=>({n:r[0],s:Math.floor(300+r[1]*h)}));
+  Object.values(store.users).forEach(u=>L.push({n:u.name,s:pscore(u),you:u===me}));return L.sort((a,b)=>b.s-a.s)}
+let lastRank=0;
+function rankUpdate(){const L=board(),r=L.findIndex(x=>x.you)+1;$('#rk').textContent='#'+r;
+  if(lastRank&&r<lastRank)toast(r===1?'You are #1!':'You passed '+L[r].n+'!');if(r===1)unlock('r1');lastRank=r}
+setInterval(()=>{if(me&&$('#game').classList.contains('on'))rankUpdate()},20000);
+function sweep(){let n=0;sel=-1;for(let l=1;l<MAXL;l++){const ix=[];me.board.forEach((v,i)=>{if(v===l)ix.push(i)});
+  for(let k=0;k+1<ix.length;k+=2){me.board[ix[k+1]]=l+1;me.board[ix[k]]=0;me.merges++;gain(l);n++;grew(l+1)}}
+  toast(n?n+' merges!':'Nothing to merge');sfx('merge',4)}
+const LC=['#9be15d','#4ade80','#34d399','#facc15','#fb923c','#fbbf24','#f43f5e','#22c55e','#ef4444','#fde047'];
+let lastM=0,cmb=0;
+function combo(i,l){const n=Date.now();cmb=n-lastM<2500?cmb+1:1;lastM=n;const bonus=cmb>1?(cmb-1)*l:0;if(bonus)gain(bonus);
+  setTimeout(()=>ftxt(i,'+'+(l+bonus)+(cmb>1?'  combo x'+cmb:'')),30)}
+function ftxt(i,t){const c=$('#board').children[i];if(!c)return;const r=c.getBoundingClientRect(),e=document.createElement('div');e.className='ft';e.textContent=t;
+  e.style.left=Math.max(4,r.left+r.width/2-30)+'px';e.style.top=r.top+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}
+function confetti(){const C=['#C6F432','#FFC857','#FF7A90','#4CC9F0','#fff'];for(let i=0;i<40;i++){const e=document.createElement('i');e.className='cf';
+  e.style.cssText=`left:${Math.random()*100}vw;background:${C[i%5]};--x:${(Math.random()-.5)*160}px;animation-delay:${Math.random()*.3}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),2300)}}
+function discover(l){const r=val(l)*2;gain(r);me.seeds+=2;sfx('ach');confetti();
+  $('#dE').textContent=E(l);$('#dT').textContent='New plant: '+PL[l-1][1];$('#dR').textContent='Reward: '+r+' coins + 2 seeds';$('#disc').classList.add('on')}
+function tickSeeds(){const n=Date.now();if(me.seeds>=5){me.lastSeed=n;return}const k=Math.floor((n-me.lastSeed)/60000);
+  if(k>0){me.seeds+=Math.min(k,5-me.seeds);me.lastSeed=me.seeds>=5?n:me.lastSeed+k*60000;save()}}
+setInterval(()=>{if(!me||!$('#game').classList.contains('on'))return;tickSeeds();$('#sd').textContent=me.seeds;
+  $('#hint').textContent=me.seeds>=5?'Free seeds are full. Plant some!':'Next free seed in '+(60-Math.floor((Date.now()-me.lastSeed)/1000))+'s'},1000);
+const day=()=>new Date().toDateString();
+function daily(){const t=day(),y=new Date(Date.now()-864e5).toDateString(),d=me.daily||{};
+  if(d.d===t){panel('Daily gift','<p>Already claimed. Come back tomorrow! Streak: '+d.s+' days</p>');return}
+  const st=d.d===y?Math.min(d.s+1,7):1,c=30*st,sd=st>=7?5:2;
+  panel('Daily gift',`<div class="row"><div>Day ${st} reward<small>${c} coins + ${sd} seeds</small></div><button class="tg on" id="claim">Claim</button></div><p style="margin-top:6px">Come back every day. Day 7 gives 5 seeds!</p>`);
+  $('#claim').onclick=()=>{me.daily={d:t,s:st};gain(c);me.seeds+=sd;save();sfx('ach');confetti();toast('Claimed!');menu()}}
+function sparks(i){const c=$('#board').children[i];if(!c)return;
+  for(let k=0;k<10;k++){const s=document.createElement('i');s.className='sp';const a=k/10*6.283;
+    s.style.cssText=`left:50%;top:50%;--x:${Math.cos(a)*38}px;--y:${Math.sin(a)*38}px;background:${k%2?'#C6F432':'#FFC857'}`;c.appendChild(s);setTimeout(()=>s.remove(),650)}}
+function render(pop,cls){
+  $('#coins').textContent=me.coins;$('#bl').textContent=E(me.top);$('#sd').textContent=me.seeds;$('#bs').textContent='Buy seed '+seedCost();$('#decor').textContent=me.deco.map(d=>DECO.find(x=>x[0]===d)[1]).join(' ');rankUpdate();
+  const b=$('#board');b.innerHTML='';
+  me.board.forEach((v,i)=>{const c=document.createElement('div');c.className='cell';c.dataset.i=i;
+    if(v){const d=document.createElement('div');d.className='it'+(i===sel?' sel':'')+(i===pop?' '+(cls||'new'):'');d.textContent=E(v);if(i!==sel)d.style.background='radial-gradient(circle,'+LC[v-1]+'66,transparent 72%)';d.setAttribute('aria-label',PL[v-1][1]);c.appendChild(d)}b.appendChild(c)});
+  const o=$('#orders');o.innerHTML='';const cur=sel>=0?me.board[sel]:0;
+  me.orders.forEach((q,i)=>{const d=document.createElement('div');d.className='ord'+(cur===q.l?' ok':'');
+    d.innerHTML=`<div class="e">${E(q.l)}</div><div class="r">${q.r} coins</div><button data-o="${i}">Deliver</button>`;o.appendChild(d)});
+  const sb=$('#sell');sb.disabled=sel<0||!me.board[sel];sb.textContent=sb.disabled?'Sell':'Sell +'+val(me.board[sel])}
+$('#orders').onclick=e=>{const k=e.target.dataset.o;if(k==null)return;const q=me.orders[k];
+  if(sel>=0&&me.board[sel]===q.l){me.board[sel]=0;sel=-1;gain(q.r);me.done++;me.orders[k]=newOrder();if(me.done>=10)unlock('o10');save();render();sfx('coin');vib(20);toast('Order delivered +'+q.r)}
+  else{toast('Select a '+PL[q.l-1][1]+' first');sfx('no')}};
+$('#sell').onclick=()=>{if(sel<0)return;gain(val(me.board[sel]));me.board[sel]=0;sel=-1;save();render();sfx('coin')};
+$('#spawn').onclick=()=>{initAudio();spawn()};
+$('#bs').onclick=()=>{initAudio();buySeed(1)};
+/* dragging */
+$('#board').addEventListener('pointerdown',e=>{const it=e.target.closest('.it');if(!it)return;initAudio(); to 
+  const i=+it.parentNode.dataset.i;drag={i,x:e.clientX,y:e.clientY,moved:false,it};e.preventDefault()});
+addEventListener('pointermove',e=>{if(!drag)return;
+  if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;drag.it.classList.add('hold');const g=$('#ghost');g.textContent=E(me.board[drag.i]);g.hidden=false}
+  if(drag.moved){const g=$('#ghost');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';
+    document.querySelectorAll('.cell.over').forEach(c=>c.classL
+<meta name="google-site-verification" content="PASTE_YOUR_GOOGLE_CODE_HERE">
+<meta name="theme-color" content="#0E2A2B">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- WhatsApp / Facebook / Telegram link preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ved Games Production">
+<meta property="og:title" content="Merge Garden - Free Merge Puzzle Game">
+<meta property="og:description" content="Buy seeds, merge plants and beat the rival gardeners. Play free now!">
+<meta property="og:url" content="https://YOUR-DOMAIN.com/">
+<meta property="og:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Merge Garden - Free Merge Puzzle Game">
+<meta name="twitter:image" content="https://YOUR-DOMAIN.com/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Merge Garden","description":"A free relaxing merge puzzle game with seeds, orders, upgrades and rankings.","url":"https://YOUR-DOMAIN.com/","image":"https://YOUR-DOMAIN.com/og-image.png","genre":"Puzzle","gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Ved Games Production","logo":"https://YOUR-DOMAIN.com/logo.png"}}</script>
+<!-- Google AdSense: after approval, uncomment and put your ca-pub ID
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E2A2B;--surf:#17403F;--surf2:#1F5251;--ink:#EAFBF1;--mut:#8DB5AE;--lime:#C6F432;--gold:#FFC857;--rose:#FF7A90;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:'Baloo 2',system-ui,sans-serif;user-select:none;overflow:hidden;touch-action:none}
+button,input{font:inherit}
+h1{font-size:clamp(46px,13vw,76px);margin:0;line-height:.95;font-weight:800;color:var(--lime)}
+h2{margin:0;font-size:26px}
+p{margin:0;color:var(--mut)}
+.scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
+.scr.on{display:flex}
+.btn{background:var(--lime);color:#14260a;border:0;border-radius:16px;padding:12px 26px;font-size:19px;font-weight:800;min-width:200px;cursor:pointer;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.94)}.btn.alt{background:var(--surf2);color:var(--ink)}.btn:disabled{opacity:.35}
+input{background:var(--surf);color:var(--ink);border:2px solid var(--lime);border-radius:14px;padding:11px 16px;font-size:20px;text-align:center;width:min(280px,80vw)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.panel{background:var(--surf);border-radius:20px;padding:16px;width:min(380px,92vw);max-height:62vh;overflow:auto;text-align:left}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid var(--surf2);gap:10px}
+.row:last-child{border:0}.row small{display:block;color:var(--mut)}.lock{opacity:.4}
+.tg{background:var(--surf2);color:var(--ink);border:0;border-radius:12px;padding:6px 14px;font-weight:700;cursor:pointer}
+.tg.on{background:var(--lime);color:#14260a}
+#game{flex-direction:column;gap:10px;justify-content:flex-start;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px}
+#top{display:flex;justify-content:space-between;width:min(420px,100%);font-size:22px;font-weight:800}
+#top span{color:var(--gold)}
+#orders{display:flex;gap:8px;width:min(420px,100%)}
+.ord{flex:1;background:var(--surf);border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid transparent;transition:border-color .2s,transform .2s}
+.ord .e{font-size:30px;line-height:1}.ord .r{color:var(--gold);font-weight:800;font-size:15px}
+.ord button{background:var(--surf2);color:var(--mut);border:0;border-radius:10px;padding:2px 12px;font-weight:800;font-size:14px}
+.ord.ok{border-color:var(--lime)}.ord.ok button{background:var(--lime);color:#14260a}
+#board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:min(420px,100%);aspect-ratio:5/6;max-height:44vh;background:var(--surf);padding:8px;border-radius:22px;touch-action:none}
+.cell{background:var(--surf2);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative}
+.cell.over{background:#2c6e6a;box-shadow:inset 0 0 0 3px var(--lime)}
+.it{font-size:min(10vw,44px);line-height:1;cursor:grab;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:14px;touch-action:none}
+.it.sel{background:#ffffff22;box-shadow:inset 0 0 0 3px var(--gold)}.it.hold{opacity:.25}
+.it.new{animation:pop .35s cubic-bezier(.2,1.6,.4,1)}.it.mg{animation:mg .5s cubic-bezier(.2,1.8,.4,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes mg{0%{transform:scale(.4)}60%{transform:scale(1.5);filter:brightness(1.6)}100%{transform:scale(1)}}
+.sp{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--lime);pointer-events:none;animation:sp .6s ease-out forwards}
+@keyframes sp{to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
+#ghost{position:fixed;pointer-events:none;font-size:52px;transform:translate(-50%,-60%);z-index:20;filter:drop-shadow(0 8px 6px #0006)}
+#bar{display:flex;flex-wrap:wrap;gap:8px;width:min(420px,100%)}
+#bar .btn{min-width:0;flex:1 1 28%;padding:10px 6px;font-size:17px}#bar #bs,#bar #spawn{flex:1 1 45%;font-size:19px}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-160%);background:var(--gold);color:#2b2000;padding:9px 18px;border-radius:14px;font-weight:800;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none;z-index:30;white-space:nowrap}
+#toast.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.it.new,.it.mg,.sp{animation:none}}
+.credit{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;margin-top:6px}.credit img{width:28px;height:28px;border-radius:7px}.logo{width:84px;height:84px;border-radius:20px}.adbox{display:none;width:min(320px,90vw);min-height:50px;border:1px dashed var(--surf2);border-radius:10px;color:var(--mut);font-size:12px}
+body{background:transparent}html{background:var(--bg)}
+body::before{content:'';position:fixed;inset:-20%;z-index:-1;background:radial-gradient(circle at 25% 25%,#2b8a6e55,transparent 40%),radial-gradient(circle at 78% 72%,#c6f43228,transparent 45%);animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(4%,3%) scale(1.12)}}
+.btn{box-shadow:0 4px 0 #0005}.btn:active{box-shadow:0 1px 0 #0005;transform:translateY(3px)}
+.duo{display:flex;gap:8px;width:min(330px,88vw)}.duo .btn{min-width:0;flex:1;padding:12px 6px;font-size:17px}
+.ft{position:fixed;pointer-events:none;font-weight:800;color:var(--gold);font-size:20px;text-shadow:0 2px 0 #0008;animation:ft 1s ease-out forwards;z-index:25}
+@keyframes ft{to{transform:translateY(-60px);opacity:0}}
+.cf{position:fixed;top:-12px;width:8px;height:12px;pointer-events:none;z-index:60;animation:cf 1.8s ease-in forwards}
+@keyframes cf{to{transform:translate(var(--x),105vh) rotate(720deg)}}
+#disc{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:50;text-align:center;padding:20px}#disc.on{display:flex}
+.cell{box-shadow:inset 0 -3px 0 #0003}
+@media(prefers-reduced-motion:reduce){.cf,body::before,.ft{animation:none}}
+</style>
+</head>
+<body>
+<div id="toast"></div><div id="ghost" hidden></div>
+
+<section class="scr" id="login">
+  <h1>Merge Garden</h1><p>Combine matching plants. Grow something amazing.</p>
+  <input id="name" maxlength="14" placeholder="Your name" autocomplete="nickname" aria-label="Your name">
+  <input id="pw" type="password" maxlength="30" placeholder="Password (4+ characters)" autocomplete="current-password" aria-label="Password">
+  <p id="err" style="color:var(--rose);min-height:20px;font-size:14px"></p>
+  <button class="btn" id="go">Sign in or create</button>
+  <button class="btn alt" id="guest">Play as guest</button>
+  <p style="font-size:13px">Your garden is saved on this device.</p>
+  <div class="credit"><img src="data:image/png;base64,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
