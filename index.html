@@ -220,4 +220,75 @@ function render(pop,cls){
   const o=$('#orders');o.innerHTML='';const cur=sel>=0?me.board[sel]:0;
   me.orders.forEach((q,i)=>{const d=document.createElement('div');d.className='ord'+(cur===q.l?' ok':'');
     d.innerHTML=`<div class="e">${E(q.l)}</div><div class="r">${q.r} coins</div><button data-o="${i}">Deliver</button>`;o.appendChild(d)});
-  const sb=$('#sell');sb.disabled=sel<0||!me.b
+  const sb=$('#sell');sb.disabled=sel<0||!me.board[sel];sb.textContent=sb.disabled?'Sell':'Sell +'+val(me.board[sel])}
+$('#orders').onclick=e=>{const k=e.target.dataset.o;if(k==null)return;const q=me.orders[k];
+  if(sel>=0&&me.board[sel]===q.l){me.board[sel]=0;sel=-1;gain(q.r);me.done++;me.orders[k]=newOrder();if(me.done>=10)unlock('o10');save();render();sfx('coin');vib(20);toast('Order delivered +'+q.r)}
+  else{toast('Select a '+PL[q.l-1][1]+' first');sfx('no')}};
+$('#sell').onclick=()=>{if(sel<0)return;gain(val(me.board[sel]));me.board[sel]=0;sel=-1;save();render();sfx('coin')};
+$('#spawn').onclick=()=>{initAudio();spawn()};
+$('#bs').onclick=()=>{initAudio();buySeed(1)};
+/* dragging */
+$('#board').addEventListener('pointerdown',e=>{const it=e.target.closest('.it');if(!it)return;initAudio();
+  const i=+it.parentNode.dataset.i;drag={i,x:e.clientX,y:e.clientY,moved:false,it};e.preventDefault()});
+addEventListener('pointermove',e=>{if(!drag)return;
+  if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;drag.it.classList.add('hold');const g=$('#ghost');g.textContent=E(me.board[drag.i]);g.hidden=false}
+  if(drag.moved){const g=$('#ghost');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';
+    document.querySelectorAll('.cell.over').forEach(c=>c.classList.remove('over'));
+    const t=document.elementFromPoint(e.clientX,e.clientY);const c=t&&t.closest('.cell');if(c)c.classList.add('over')}});
+addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;$('#ghost').hidden=true;
+  document.querySelectorAll('.cell.over').forEach(c=>c.classList.remove('over'));
+  if(!d.moved){sel=sel===d.i?-1:d.i;render();sfx('click');return}
+  const t=document.elementFromPoint(e.clientX,e.clientY),c=t&&t.closest('.cell');
+  if(c)drop(d.i,+c.dataset.i);else render()});
+/* screens */
+function screens(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id))}
+function menu(){$('#bDaily').textContent=(me.daily&&me.daily.d===day())?'Daily gift':'Daily gift (ready)';$('#hello').textContent='Welcome, '+me.name;
+  $('#stat').textContent='Top plant '+E(me.top)+'  |  '+me.merges+' merges  |  '+Object.keys(me.ach).length+'/'+ACH.length+' achievements';screens('menu')}
+function panel(t,h){$('#pt').textContent=t;$('#pb').innerHTML=h;screens('pan')}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shop(){const sc=seedCost(),cur=sel>=0?me.board[sel]:0,fc=60*cur;
+  const B=(t,sub,btn,id,ok)=>`<div class="row"><div>${t}<small>${sub}</small></div><button class="tg on" data-b="${id}" ${ok?'':'disabled style="opacity:.4"'}>${btn}</button></div>`;
+  const pk=Math.floor(sc*5*.8),okf=cur&&cur<MAXL&&me.coins>=fc;
+  let h=`<p style="margin-bottom:6px">You have ${me.coins} coins and ${me.seeds} seeds</p>`;
+  h+=B('Seed pack x5','20% cheaper than single seeds',pk,'pack',me.coins>=pk);
+  h+=B('Fertilizer','Boost the selected plant one level',cur&&cur<MAXL?fc:'Select a plant','fert',okf);
+  h+=B('Gardener sweep','Merge every matching pair on the board',150,'sweep',me.coins>=150);
+  [['s','Better seeds','Chance to plant a Herb'],['l','Lucky growth','Chance a merge jumps two levels']].forEach(u=>{const lv=me.up[u[0]],c=40*Math.pow(2,lv);
+    h+=B(u[1]+' (lv '+lv+'/8)',u[2],lv>=8?'Max':c,'u'+u[0],lv<8&&me.coins>=c)});
+  DECO.forEach(d=>{const own=me.deco.includes(d[0]);h+=B(d[1]+' '+d[2],'+'+d[4]+' garden score, shown above your board',own?'Owned':d[3],'d'+d[0],!own&&me.coins>=d[3])});
+  panel('Shop',h);document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>buy(b.dataset.b))}
+function buy(id){const pay=c=>{if(me.coins<c)return false;me.coins-=c;return true};
+  if(id==='pack'){if(buySeed(5))shop();return}
+  if(id==='fert'){const l=sel>=0?me.board[sel]:0;if(!l||l>=MAXL||!pay(60*l))return;me.board[sel]=l+1;grew(l+1);sfx('merge',l+1)}
+  else if(id==='sweep'){if(!pay(150))return;sweep()}
+  else if(id[0]==='u'){const k=id[1],c=40*Math.pow(2,me.up[k]);if(me.up[k]>=8||!pay(c))return;me.up[k]++;unlock('up');sfx('coin')}
+  else{const d=DECO.find(x=>x[0]===id.slice(1));if(!d||me.deco.includes(d[0])||!pay(d[3]))return;me.deco.push(d[0]);unlock('d1');sfx('ach')}
+  save();shop()}
+async function hash(n,p){const t=new TextEncoder().encode('vgp:'+n.toLowerCase()+':'+p);
+  try{const b=await crypto.subtle.digest('SHA-256',t);return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of t)h=(h*33^c)>>>0;return'x'+h}}
+$('#go').onclick=async()=>{initAudio();const n=$('#name').value.trim().slice(0,14),p=$('#pw').value,err=$('#err');
+  if(n.length<2){err.textContent='Enter a name with 2 or more letters.';return}
+  if(p.length<4){err.textContent='Password must be 4 or more characters.';return}
+  if(n.toLowerCase()==='guest'){err.textContent='That name is reserved. Choose another name.';return}
+  const k=Object.keys(store.users).find(x=>x.toLowerCase()===n.toLowerCase()),h=await hash(n,p);
+  if(k){const u=store.users[k];if(u.pw&&u.pw!==h){err.textContent='This name is already taken. Wrong password, or choose a different name.';sfx('no');return}u.pw=h;err.textContent='';sfx('click');signIn(k)}
+  else{err.textContent='';sfx('click');signIn(n,h)}};
+$('#name').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pw').focus()});$('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
+$('#guest').onclick=()=>{initAudio();sfx('click');signIn('Guest')};
+$('#play').onclick=()=>{initAudio();sfx('click');sel=-1;tickSeeds();screens('game');render()};
+$('#menuB').onclick=()=>{sfx('click');menu()};$('#pc').onclick=()=>{sfx('click');menu()};
+$('#shop').onclick=()=>{sfx('click');shop()};
+$('#bDaily').onclick=()=>{sfx('click');daily()};$('#dOk').onclick=()=>{sfx('click');$('#disc').classList.remove('on')};
+$('#bBook').onclick=()=>{sfx('click');panel('Plant book',PL.map((p,i)=>`<div class="row ${i<me.seen?'':'lock'}"><div>${i<me.seen?p[0]+' '+p[1]:'? Undiscovered'}</div><span>Level ${i+1}</span></div>`).join(''))};
+$('#bOut').onclick=()=>{sfx('click');me=null;$('#pw').value='';$('#err').textContent='';screens('login')};
+$('#bAch').onclick=()=>{sfx('click');panel('Achievements',ACH.map(a=>`<div class="row ${me.ach[a[0]]?'':'lock'}"><div>${a[1]}<small>${a[2]}</small></div><span>${me.ach[a[0]]?'Unlocked':'Locked'}</span></div>`).join(''))};
+$('#bLb').onclick=()=>{sfx('click');panel('Rankings',board().map((u,i)=>`<div class="row" ${u.you?'style="color:var(--lime)"':''}><div>${i+1}. ${esc(u.n||'?')}${u.you?' (you)':''}</div><b>${u.s}</b></div>`).join('')+'<p style="margin-top:8px;font-size:13px">Score comes from merges, orders, your top plant and decorations. Rival gardeners keep growing as time passes.</p>')};
+$('#bSet').onclick=()=>{sfx('click');const R=(k,l)=>`<div class="row"><div>${l}</div><button class="tg ${store.set[k]?'on':''}" data-k="${k}">${store.set[k]?'On':'Off'}</button></div>`;
+  panel('Settings',R('sfx','Sound effects')+R('music','Music')+R('vib','Vibration'));
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;store.set[k]=!store.set[k];save();b.classList.toggle('on',store.set[k]);b.textContent=store.set[k]?'On':'Off';sfx('click')})};
+if(store.last&&store.users[store.last])$('#name').value=store.last;
+screens('login');
+$('#boot').remove();
+</script>
+</body>
+</html>
